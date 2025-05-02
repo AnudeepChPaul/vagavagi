@@ -1,68 +1,43 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button } from '@react-navigation/elements'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AuthenticatedApp, useAuthContext } from './db';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faReact } from '@fortawesome/free-brands-svg-icons/faReact';
+import { AuthenticatedApp, useAuthContext } from 'src/context/AuthContext';
+import { HomeRouteStacks } from 'src/pages/home/HomeRootNavigation';
+import { LoginScreen } from 'src/pages/auth/LoginScreen';
+import { CustomizedStatusBar, StatusBarContextActions, useStatusBarContext } from 'src/context/StatusBarContext';
 
-function OverviewSummaryScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <StatusBar style="auto" />
-      {/* <BottomTabbar /> */}
-    </View>
-  );
-}
-function GroupsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Groups Screen</Text>
-      <StatusBar style="auto" />
-      {/* <BottomTabbar /> */}
-    </View>
-  );
-}
-function FriendsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Friends Screen</Text>
-      <StatusBar style="auto" />
-      {/* <BottomTabbar /> */}
-    </View>
-  );
-}
-function LoginScreen() {
-  const [abcd, authenticate] = useAuthContext();
-
-  return (
-    <View style={styles.container}>
-      <Button onPressIn={() => authenticate({ type: "AUTHENTICATE" })}>Login</Button>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const Stack = createNativeStackNavigator({});
-const Tab = createBottomTabNavigator();
-
-function HomeRouteStacks() {
-  return (
-    <Tab.Navigator initialRouteName='Overview'>
-      <Tab.Screen name="Overview" component={OverviewSummaryScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Groups" component={GroupsScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Friends" component={FriendsScreen} options={{ headerShown: false }} />
-    </Tab.Navigator>
-  );
-}
-
+const Stack = createNativeStackNavigator();
 
 function RootNavigationController() {
-  const [authContext, dispatch] = useAuthContext();
+  const [authContext] = useAuthContext();
+  const [_, dispatchStatusbarOptions] = useStatusBarContext();
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        dispatchStatusbarOptions({
+          type: StatusBarContextActions.SHOW_STATUS_BAR
+        });
+      } else {
+        dispatchStatusbarOptions({
+          type: authContext.loggedIn ? StatusBarContextActions.SHOW_STATUS_BAR : StatusBarContextActions.HIDE_STATUS_BAR
+        })
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+
 
   return (
     <NavigationContainer>
@@ -72,12 +47,6 @@ function RootNavigationController() {
             ? <Stack.Screen
               name="Home"
               component={HomeRouteStacks}
-              options={{
-                headerTitle: props => <FontAwesomeIcon icon={faReact} />,
-                headerRight: () => (
-                  <Button onPress={() => alert('This is a button!')}>Info</Button>
-                ),
-              }}
             />
             : <Stack.Screen
               name="Login"
@@ -90,14 +59,9 @@ function RootNavigationController() {
 }
 
 export default function App() {
-  return <AuthenticatedApp>
-    <RootNavigationController />
-  </AuthenticatedApp>
+  return <CustomizedStatusBar>
+    <AuthenticatedApp>
+      <RootNavigationController />
+    </AuthenticatedApp>
+  </CustomizedStatusBar>
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
