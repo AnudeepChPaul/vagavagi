@@ -1,7 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, Text, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { Item } from 'react-navigation-header-buttons'
+import { Button } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faReact } from '@fortawesome/free-brands-svg-icons/faReact';
 
@@ -16,42 +14,36 @@ import { faUsersGear } from '@fortawesome/free-solid-svg-icons/faUsersGear';
 import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
+import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { generateRandomId } from "src/util/Util";
+import { AddEntry } from "src/organisms/AddEntry";
+import { GroupsScreen } from "src/screens/GroupsScreen";
+import { FriendsScreen } from "src/screens/FriendsScreen";
+import { OverviewSummaryScreen } from "src/screens/OverviewScreen";
+import { Tab } from '@rneui/themed';
+import { Icon } from '@rneui/themed'
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
-function OverviewSummaryScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-function GroupsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Groups Screen</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-function FriendsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Friends Screen</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-
-const Tab = createBottomTabNavigator();
+const TabN = createBottomTabNavigator();
+const StackN = createNativeStackNavigator();
 
 export function HomeRouteStacks() {
+  return <StackN.Navigator
+    id={generateRandomId()}
+    initialRouteName="LandingPage"
+  >
+    <StackN.Screen
+      name="Add"
+      component={AddEntry}
+    />
+    <StackN.Screen
+      name="LandingPage"
+      component={TabbedBarStack}
+    ></StackN.Screen>
+  </StackN.Navigator>
+}
+
+export function TabbedBarStack() {
   const navigation = useNavigation();
   const [__, dispatchStatusbarOptions] = useStatusBarContext();
 
@@ -59,53 +51,52 @@ export function HomeRouteStacks() {
     dispatchStatusbarOptions({ type: StatusBarContextActions.SHOW_STATUS_BAR });
     navigation.setOptions({
       headerTitle: (props: any) =>
-        <FontAwesomeIcon icon={faReact} {...props} size={36} />,
+        <FontAwesomeIcon icon={faReact} {...props} size={36} color="tomato" />,
       headerRight: () => (
-        <Item onPress={() => alert('This is a button!')} title="Add"></Item>
+        <Button onPress={() => navigation.navigate('Add')} title="Add" />
       )
     });
   }, [])
 
 
   return (
-    <Tab.Navigator initialRouteName='Overview'
+    <TabN.Navigator
+      initialRouteName='Overview'
+      id={generateRandomId()}
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: {
-          fontSize: 13
+          fontSize: ROOT_FONT_SIZE * 95 / 100
         },
         tabBarIcon: ({ focused }) => {
-          let icon = null;
+          const commonProps = {
+            color: focused ? 'tomato' : '#ababab'
+          }
 
           switch (route.name) {
             case 'Overview':
-              icon = focused ? faEye : faRegularEye;
-              break;
+              return <Icon type="materialicon" name="dashboard" {...commonProps} />
             case 'Groups':
-              icon = focused ? faUsersGear : faUsersGear;
-              break;
+              return <Icon type="font-awesome" name="group" {...commonProps} />
             case 'Friends':
-              icon = focused ? faUser : faRegularUser;
-              break;
+              return <Icon type="font-awesome-5" name="user-tag" {...commonProps} />
           }
-
-          return <FontAwesomeIcon icon={icon} color={focused ? "tomato" : "#ababab"} />
         }
       })}>
-      <Tab.Screen
+      <TabN.Screen
         name="Overview"
         component={OverviewSummaryScreen}
         options={{ headerShown: false }} />
-      <Tab.Screen
+      <TabN.Screen
         name="Groups"
         component={GroupsScreen}
         options={{ headerShown: false }} />
-      <Tab.Screen
+      <TabN.Screen
         name="Friends"
         component={FriendsScreen}
         options={{ headerShown: false }} />
-    </Tab.Navigator>
+    </TabN.Navigator>
   );
 }
 

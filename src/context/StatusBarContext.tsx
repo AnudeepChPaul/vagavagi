@@ -1,8 +1,8 @@
 import React, { Context, createContext, useContext, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
+import { useImmer } from "use-immer";
 
-
-type StatusBarConextType = {
+type StatusBarContextType = {
   hidden: boolean;
 }
 
@@ -13,11 +13,11 @@ export enum StatusBarContextActions {
 }
 
 type StatusBarContextValue = [
-  StatusBarConextType,
+  StatusBarContextType,
   (action: { type: StatusBarContextActions }) => void
 ]
 
-const initialData = (): StatusBarConextType => ({
+const initialData = (): StatusBarContextType => ({
   hidden: false
 })
 
@@ -33,8 +33,8 @@ export const useStatusBarContext = (): StatusBarContextValue => {
 }
 
 
-export const CustomizedStatusBar = ({ children }) => {
-  const [state, setState] = useState(initialData());
+export const DeviceLayerContext = ({ children }) => {
+  const [state, setState] = useImmer(initialData());
 
   const dispatch = (action: { type: StatusBarContextActions }) => {
     switch (action.type) {
