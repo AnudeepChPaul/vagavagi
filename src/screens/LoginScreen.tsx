@@ -1,7 +1,7 @@
-import { useAuthContext } from "src/context/AuthContext";
 import { StyleSheet, View, Button } from 'react-native';
 import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
 import { useEffect } from "react";
+import { useAuthContext } from 'src/context/AuthContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,7 +18,6 @@ export function LoginScreen() {
   useEffect(() => {
     dispatchStatusbarOptions({
       type: StatusBarContextActions.SHOW_STATUS_BAR,
-      payload: true
     });
   }, []);
 

@@ -1,46 +1,43 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Button } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faReact } from '@fortawesome/free-brands-svg-icons/faReact';
-
-import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
-import { faUser as faRegularUser } from '@fortawesome/free-regular-svg-icons/faUser';
-
-import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
-import { faEye as faRegularEye } from '@fortawesome/free-regular-svg-icons/faEye';
-
-import { faUsersGear } from '@fortawesome/free-solid-svg-icons/faUsersGear';
-
-import { useEffect } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Icon } from '@rneui/themed';
+import { useEffect } from "react";
+import { Button } from 'react-native';
+import { ApplicationContext } from "src/context/AppContext";
 import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
 import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { generateRandomId } from "src/util/Util";
 import { AddEntry } from "src/organisms/AddEntry";
-import { GroupsScreen } from "src/screens/GroupsScreen";
+import { ActivitiesScreen } from 'src/screens/Activities';
 import { FriendsScreen } from "src/screens/FriendsScreen";
+import { GroupsScreen } from "src/screens/GroupsScreen";
 import { OverviewSummaryScreen } from "src/screens/OverviewScreen";
-import { Tab } from '@rneui/themed';
-import { Icon } from '@rneui/themed'
 
-const TabN = createBottomTabNavigator();
-const StackN = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export function HomeRouteStacks() {
-  return <StackN.Navigator
-    id={generateRandomId()}
-    initialRouteName="LandingPage"
-  >
-    <StackN.Screen
-      name="Add"
-      component={AddEntry}
-    />
-    <StackN.Screen
-      name="LandingPage"
-      component={TabbedBarStack}
-    ></StackN.Screen>
-  </StackN.Navigator>
+  return <ApplicationContext>
+    <Stack.Navigator
+      id={undefined}
+      initialRouteName="LandingPage"
+    >
+      <Stack.Screen
+        name="Activities"
+        component={ActivitiesScreen}
+      />
+      <Stack.Screen
+        name="Add"
+        component={AddEntry}
+      />
+      <Stack.Screen
+        name="LandingPage"
+        component={TabbedBarStack}
+      ></Stack.Screen>
+    </Stack.Navigator>
+  </ApplicationContext>
 }
 
 export function TabbedBarStack() {
@@ -53,6 +50,7 @@ export function TabbedBarStack() {
       headerTitle: (props: any) =>
         <FontAwesomeIcon icon={faReact} {...props} size={36} color="tomato" />,
       headerRight: () => (
+        // @ts-ignore
         <Button onPress={() => navigation.navigate('Add')} title="Add" />
       )
     });
@@ -60,9 +58,9 @@ export function TabbedBarStack() {
 
 
   return (
-    <TabN.Navigator
+    <Tab.Navigator
       initialRouteName='Overview'
-      id={generateRandomId()}
+      id={undefined}
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
@@ -73,7 +71,6 @@ export function TabbedBarStack() {
           const commonProps = {
             color: focused ? 'tomato' : '#ababab'
           }
-
           switch (route.name) {
             case 'Overview':
               return <Icon type="materialicon" name="dashboard" {...commonProps} />
@@ -84,19 +81,19 @@ export function TabbedBarStack() {
           }
         }
       })}>
-      <TabN.Screen
+      <Tab.Screen
         name="Overview"
         component={OverviewSummaryScreen}
         options={{ headerShown: false }} />
-      <TabN.Screen
+      <Tab.Screen
         name="Groups"
         component={GroupsScreen}
         options={{ headerShown: false }} />
-      <TabN.Screen
+      <Tab.Screen
         name="Friends"
         component={FriendsScreen}
         options={{ headerShown: false }} />
-    </TabN.Navigator>
+    </Tab.Navigator>
   );
 }
 
