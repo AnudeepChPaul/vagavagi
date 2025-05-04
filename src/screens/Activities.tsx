@@ -1,11 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
-import { Avatar, Button, ButtonGroup, Icon, ListItem } from "@rneui/themed";
+import { Avatar, Button, ButtonGroup, Icon } from "@rneui/themed";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { AppText } from "src/atoms/AppText";
 import { useAppContext } from "src/context/AppContext";
 import { AppActivity, AppContextDispatchTypes } from "src/data/types";
 import { useImmer } from "use-immer";
+import { faker } from "@faker-js/faker";
+import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
 
 
 export const ActivitiesScreen = () => {
@@ -58,35 +60,41 @@ export const ActivitiesScreen = () => {
     />
     <ScrollView style={{ flex: 1, height: 200, width: '100%' }}>
       {appData.activities.map((activity: AppActivity) => {
+        const backgroundColor = faker.color.human();
         const cOrD = activity.type === AppContextDispatchTypes.CREDIT ? 0 : 1;
 
-        return <ListItem key={activity.sid} bottomDivider>
-          <Avatar
-            key={activity.sid}
-            rounded
-            source={{ uri: `https://randomuser.me/api/portraits/men/36.jpg` }}
-          />
-          <ListItem.Content key={activity.sid} style={{ flex: 5 }}>
-            <ListItem.Title style={{ color: colors[cOrD] }}>
-              {activity.from}
-            </ListItem.Title>
-            <ListItem.Subtitle>
-              {new Date(activity.createdDate).getDay()} days ago
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <View style={{ flexDirection: 'row' }}>
-            <AppText style={{ color: colors[cOrD] }}>{type[cOrD]}</AppText>
-            <Icon
-              type="font-awesome"
-              name="inr"
-              color={colors[cOrD]}
-              style={{ marginLeft: 15, marginTop: 0, marginBottom: 0, marginRight: 4 }}
+        return <View key={activity.sid}
+          style={{ width: '100%', margin: 'auto', paddingLeft: 16, paddingRight: 16 }}>
+          <View style={{ width: '100%', borderBottomColor: '#ababab', borderBottomWidth: 1, flexDirection: 'row', paddingTop: 16, paddingBottom: 16, justifyContent: 'space-between', alignItems: 'center' }}>
+            <Avatar
+              key={activity.sid}
+              rounded
+              title={activity.from.split(" ").map(c => c[0]).join("")}
+              titleStyle={{ mixBlendMode: 'difference' }}
+              containerStyle={{ backgroundColor }}
             />
-            <AppText style={{ color: colors[cOrD] }}>
-              {activity.amount}
-            </AppText>
+            <View style={{ marginRight: 10, marginLeft: 10, flex: 1 }}>
+              <AppText style={{ textAlign: 'left', fontSize: ROOT_FONT_SIZE * 1.3, color: colors[cOrD] }}>
+                {activity.from}
+              </AppText>
+              <AppText style={{ textAlign: 'left' }}>
+                {new Date(activity.createdDate).getDay()} days ago
+              </AppText>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <AppText style={{ color: colors[cOrD] }}>{type[cOrD]}</AppText>
+              <Icon
+                type="font-awesome"
+                name="inr"
+                color={colors[cOrD]}
+                style={{ marginLeft: 15, marginTop: 0, marginBottom: 0, marginRight: 4 }}
+              />
+              <AppText style={{ color: colors[cOrD] }}>
+                {activity.amount}
+              </AppText>
+            </View>
           </View>
-        </ListItem>
+        </View>
       })}
     </ScrollView>
   </View>

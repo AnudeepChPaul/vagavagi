@@ -6,6 +6,8 @@ import { useAppContext } from "src/context/AppContext";
 import { AppActivity, AppContextDispatchTypes } from "src/data/types";
 import { useImmer } from "use-immer";
 import { Button } from 'react-native';
+import { faker } from "@faker-js/faker";
+import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
 
 export function ExpenditureList() {
   const [appData] = useAppContext();
@@ -52,61 +54,66 @@ export function ExpenditureList() {
           }}
         />
       </View>
-      {/* <Button */}
-      {/*   title="Show all" */}
-      {/*   onPress={() => { */}
-      {/*     // @ts-ignore */}
-      {/*     navigation.navigate('Activities') */}
-      {/*   }} */}
-      {/* /> */}
     </View>
     <ScrollView style={{ flex: 1, width: '100%' }}>
-      {appData.activities.slice(0, 5).map((activity: AppActivity) => {
-        const cOrD = activity.type === AppContextDispatchTypes.CREDIT ? 0 : 1;
-        return <ListItem key={activity.sid} bottomDivider>
-          <Avatar
-            key={activity.sid}
-            rounded
-            source={{ uri: `https://randomuser.me/api/portraits/men/36.jpg` }}
-          />
-          <ListItem.Content key={activity.sid} style={{ flex: 5 }}>
-            <ListItem.Title style={{ color: colors[cOrD] }}>
-              {activity.from}
-            </ListItem.Title>
-            <ListItem.Subtitle>
-              {new Date(activity.createdDate).getDay()} days ago
-            </ListItem.Subtitle>
-          </ListItem.Content>
-          <View style={{ flexDirection: 'row' }}>
-            <AppText style={{ color: colors[cOrD] }}>{type[cOrD]}</AppText>
-            <Icon
-              type="font-awesome"
-              name="inr"
-              color={colors[cOrD]}
-              style={{ marginLeft: 15, marginTop: 0, marginBottom: 0, marginRight: 4 }}
-            />
-            <AppText style={{ color: colors[cOrD] }}>
-              {activity.amount}
-            </AppText>
-          </View>
-        </ListItem>
-      })}
+      <View style={{
+        width: '100%',
+        margin: 'auto',
+        paddingLeft: 16,
+        paddingRight: 16
+      }}>
 
-      <ListItem>
-        <ListItem.Content style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlignVertical: 'center',
-        }}>
-          <Button
-            title="Showing only top 5 activities. See more"
-            onPress={() => {
-              // @ts-ignore
-              navigation.push('Activities')
-            }} />
-        </ListItem.Content>
-      </ListItem>
+        {appData.activities.slice(0, 5).map((activity: AppActivity) => {
+          const backgroundColor = faker.color.human();
+          const cOrD = activity.type === AppContextDispatchTypes.CREDIT ? 0 : 1;
+
+          return <View style={{
+            width: '100%',
+            borderBottomColor: '#ababab',
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            paddingTop: 16,
+            paddingBottom: 16,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: 'auto'
+          }}>
+            <Avatar
+              key={activity.sid}
+              rounded
+              title={activity.from.split(" ").map(c => c[0]).join("")}
+              titleStyle={{ mixBlendMode: 'difference' }}
+              containerStyle={{ backgroundColor }}
+            />
+            <View style={{ marginRight: 10, marginLeft: 10, flex: 1 }}>
+              <AppText style={{ textAlign: 'left', fontSize: ROOT_FONT_SIZE * 1.3, color: colors[cOrD] }}>
+                {activity.from}
+              </AppText>
+              <AppText style={{ textAlign: 'left' }}>
+                {new Date(activity.createdDate).getDay()} days ago
+              </AppText>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <AppText style={{ color: colors[cOrD] }}>{type[cOrD]}</AppText>
+              <Icon
+                type="font-awesome"
+                name="inr"
+                color={colors[cOrD]}
+                style={{ marginLeft: 15, marginTop: 0, marginBottom: 0, marginRight: 4 }}
+              />
+              <AppText style={{ color: colors[cOrD] }}>
+                {activity.amount}
+              </AppText>
+            </View>
+          </View>
+        })}
+        <Button
+          title="Showing only top 5 activities. See more"
+          onPress={() => {
+            // @ts-ignore
+            navigation.push('Activities')
+          }} />
+      </View>
     </ScrollView>
   </View>
 }
