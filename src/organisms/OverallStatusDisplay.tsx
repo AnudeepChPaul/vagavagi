@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center'
   },
   text: {
-    fontSize: ROOT_FONT_SIZE * 1.3,
+    fontSize: ROOT_FONT_SIZE * 1.2,
     marginTop: 0,
     marginBottom: 0,
     marginLeft: 2,
     marginRight: 8
   },
   bold: {
-    fontSize: ROOT_FONT_SIZE * 1.3,
+    fontSize: ROOT_FONT_SIZE * 1.2,
     fontWeight: 800,
     marginTop: 0,
     marginBottom: 0,
@@ -89,7 +89,7 @@ const NeutralText: React.FC = () => {
       <Text style={[
         styles.text,
         { color: 'royalblue' }
-      ]}>You're all set! You neither lent nor in debt.</Text>
+      ]}>All set! You neither lent nor in debt.</Text>
     </View >
   )
 }

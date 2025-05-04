@@ -16,16 +16,23 @@ export function LoginScreen() {
   const [__, dispatchStatusbarOptions] = useStatusBarContext();
 
   useEffect(() => {
+    // dispatchStatusbarOptions({
+    //   type: StatusBarContextActions.HIDE_STATUS_BAR,
+    // });
+  }, []);
+
+  const doLogin = () => {
     dispatchStatusbarOptions({
       type: StatusBarContextActions.SHOW_STATUS_BAR,
     });
-  }, []);
+    authenticate({ type: "AUTHENTICATE" })
+  }
 
   return (
     <View style={styles.container}>
       <Button
         title="Login"
-        onPress={() => authenticate({ type: "AUTHENTICATE" })} />
+        onPress={() => doLogin()} />
     </View>
   );
 }

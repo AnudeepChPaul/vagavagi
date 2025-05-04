@@ -1,5 +1,5 @@
-import React, { Context, createContext, useContext, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
+import React, { Context, createContext, useContext } from "react";
 import { useImmer } from "use-immer";
 
 type StatusBarContextType = {
@@ -18,7 +18,7 @@ type StatusBarContextValue = [
 ]
 
 const initialData = (): StatusBarContextType => ({
-  hidden: false
+  hidden: true
 })
 
 
@@ -50,11 +50,13 @@ export const DeviceLayerContext = ({ children }) => {
   }
 
   return (<StatusBarContext.Provider value={[state, dispatch]}>
-    {children}
     <StatusBar
       animated={true}
-      backgroundColor="#61dafb"
+      backgroundColor="red"
+      style="auto"
+      translucent={false}
       hidden={state.hidden}
     />
+    {children}
   </StatusBarContext.Provider>)
 }

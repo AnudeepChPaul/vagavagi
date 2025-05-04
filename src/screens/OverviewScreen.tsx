@@ -6,8 +6,8 @@ import { WelcomeCard } from "src/organisms/WelcomeCard";
 export function OverviewSummaryScreen() {
   return (
     <AppLayout>
-      <WelcomeCard />
       <OverallStatusDisplay />
+      <WelcomeCard />
       <ExpenditureList />
     </AppLayout>
   );

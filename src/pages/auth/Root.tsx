@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import { AppState } from "react-native";
 import { mockUserPerson } from 'src/context/AppContext';
 import { AuthContext, initialAuthData } from "src/context/AuthContext";
-import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
 import { HomeRouteStacks } from "src/pages/home/HomeRootNavigation";
 import { LoginScreen } from "src/screens/LoginScreen";
 import { generateRandomId } from "src/util/Util";
@@ -30,17 +29,9 @@ export function RootNavigationController() {
         break;
     }
   }
-  const [_, dispatchStatusbarOptions] = useStatusBarContext();
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
-    if (!state.loggedIn) {
-      dispatchStatusbarOptions({
-        type: StatusBarContextActions.HIDE_STATUS_BAR
-      });
-    }
-
-
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (
         appState.current.match(/inactive|background/) &&
@@ -50,11 +41,11 @@ export function RootNavigationController() {
         //   type: StatusBarContextActions.SHOW_STATUS_BAR
         // });
       } else {
-        dispatchStatusbarOptions({
-          type: state.loggedIn
-            ? StatusBarContextActions.SHOW_STATUS_BAR
-            : StatusBarContextActions.HIDE_STATUS_BAR
-        })
+        // dispatchStatusbarOptions({
+        //   type: state.loggedIn
+        //     ? StatusBarContextActions.SHOW_STATUS_BAR
+        //     : StatusBarContextActions.HIDE_STATUS_BAR
+        // })
       }
 
       appState.current = nextAppState;

@@ -10,7 +10,13 @@ export enum AppContextDispatchTypes {
   DEBIT = 'DEBIT',
   LOAD_INDIVIDUALS = 'LOAD_INDIVIDUALS',
   LOAD_ACTIVITIES = 'LOAD_ACTIVITIES',
-  SET_OVERALLS = 'SET_OVERALLS'
+  SET_OVERALLS = 'SET_OVERALLS',
+  SET_QUICKFILTER = 'SET_QUICKFILTER',
+}
+
+export enum AppContextTransactionTypes {
+  CREDIT = 'CREDIT',
+  DEBIT = 'DEBIT',
 }
 
 export type Group = {
@@ -43,7 +49,7 @@ export type AppActivity = {
   sid: string;
   from: string;
   to: string;
-  type: AppContextDispatchTypes;
+  type: AppContextTransactionTypes;
   amount: number;
   createdDate: string;
 }
@@ -54,12 +60,16 @@ export type AppContextState = {
   overallMoney: number | null;
   totalBorrowed: number | null;
   totalLent: number | null;
+  quickFilter: {
+    transactionType: AppContextTransactionTypes | null
+  },
   // TODO: convert to map instead sid, Individual
   individuals: Array<Individual>;
   // TODO: convert to map instead sid, Group
   groups: Array<Group>;
   // TODO: convert to map instead sid, AppActivity
-  activities: Array<AppActivity>;
+  _activities: Array<AppActivity>;
+  filteredActivities: Array<AppActivity>;
 }
 
 export type TransactionDispatch = {
@@ -79,6 +89,10 @@ export type ActivitiesDispatch = {
   payload: Array<AppActivity>
 }
 
+export type AppContextQuickFilterDispatch = {
+  type: AppContextDispatchTypes,
+  payload: AppContextTransactionTypes
+}
 
 export type AppOverallsDispatch = {
   type: AppContextDispatchTypes,
@@ -93,6 +107,7 @@ export type AppContextDispatchAction =
   | TransactionDispatch
   | UserGroupDispatch
   | ActivitiesDispatch
-  | AppOverallsDispatch;
+  | AppOverallsDispatch
+  | AppContextQuickFilterDispatch;
 
 

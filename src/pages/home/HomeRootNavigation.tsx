@@ -1,12 +1,11 @@
-import { faReact } from '@fortawesome/free-brands-svg-icons/faReact';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Icon } from '@rneui/themed';
 import { useEffect } from "react";
-import { Button } from 'react-native';
+import { Button, Platform } from 'react-native';
 import { ApplicationContext } from "src/context/AppContext";
+import { useAuthContext } from 'src/context/AuthContext';
 import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
 import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
 import { AddEntry } from "src/organisms/AddEntry";
@@ -42,13 +41,19 @@ export function HomeRouteStacks() {
 
 export function TabbedBarStack() {
   const navigation = useNavigation();
+  const [authCtx] = useAuthContext();
   const [__, dispatchStatusbarOptions] = useStatusBarContext();
 
   useEffect(() => {
     dispatchStatusbarOptions({ type: StatusBarContextActions.SHOW_STATUS_BAR });
+    if (Platform.OS === 'android') {
+      navigation.setOptions({
+        headerShown: false
+      });
+    }
+
     navigation.setOptions({
-      headerTitle: (props: any) =>
-        <FontAwesomeIcon icon={faReact} {...props} size={36} color="tomato" />,
+      headerTitle: () => authCtx.auth.name,
       headerRight: () => (
         // @ts-ignore
         <Button onPress={() => navigation.navigate('Add')} title="Add" />

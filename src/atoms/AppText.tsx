@@ -1,8 +1,12 @@
 import { PropsWithChildren } from "react";
-import { StyleProp, Text, TextProps, TextStyle } from "react-native";
-import { getFontSize } from "src/util/ResponsiveUtil";
+import { Text, TextProps } from "react-native";
+import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
 
 
 export function AppText(props: PropsWithChildren<TextProps>) {
-  return <Text style={[{ textAlign: 'center', fontSize: getFontSize(14) }, props.style]} >{props.children}</Text>
+  return <Text style={[
+    {
+      textAlign: 'center',
+      fontSize: ROOT_FONT_SIZE
+    }, props.style]} >{props.children}</Text>
 }

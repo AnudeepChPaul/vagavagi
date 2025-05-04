@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import React, { Context, createContext, useContext, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useAuthContext } from "src/context/AuthContext";
-import { ActivitiesDispatch, AppActivity, AppContextDispatchAction, AppContextDispatchTypes, AppContextState, AppOverallsDispatch, Individual, IndividualDispatchPayload, OverallMonetaryStatus, TransactionDispatch } from "src/data/types";
+import { ActivitiesDispatch, AppActivity, AppContextDispatchAction, AppContextDispatchTypes, AppContextTransactionTypes, AppContextState, AppOverallsDispatch, Individual, IndividualDispatchPayload, OverallMonetaryStatus, TransactionDispatch } from "src/data/types";
 import { generateRandomId } from "src/util/Util";
 import { useImmerReducer } from "use-immer";
 
@@ -34,12 +34,12 @@ export const mockActivities: () => Array<AppActivity> = () => new Array(20).fill
   from: mockIndividuals[index].name,
   to: mockIndividuals[index].name,
   type: [
-    AppContextDispatchTypes.CREDIT,
-    AppContextDispatchTypes.DEBIT
+    AppContextTransactionTypes.CREDIT,
+    AppContextTransactionTypes.DEBIT
   ][Number(Math.random()).toFixed(0)],
   amount: Number(faker.finance.amount({ min: 0, max: 5000 })),
   createdDate: faker.date.recent({ days: 4 }).toUTCString()
-}))
+} as AppActivity))
 
 const initialData = (): AppContextState => ({
   overallStatus: OverallMonetaryStatus.NEUTRAL,
@@ -47,10 +47,13 @@ const initialData = (): AppContextState => ({
   totalBorrowed: null,
   totalLent: null,
 
+  quickFilter: null,
+
   user: null,
   individuals: [],
 
-  activities: [],
+  _activities: [],
+  filteredActivities: [],
   groups: []
 });
 
@@ -96,8 +99,27 @@ export const ApplicationContext = ({ children }) => {
               new Date(act1.createdDate).getTime() - new Date(act2.createdDate).getTime()
           )
           .forEach((activity: AppActivity) => {
-            draft.activities.push({ ...activity });
+            draft._activities.push({ ...activity });
+            if (
+              !draft.quickFilter?.transactionType ||
+              activity.type === draft.quickFilter.transactionType
+            ) {
+              draft.filteredActivities.push({ ...activity });
+            }
           })
+        break;
+      case AppContextDispatchTypes.SET_QUICKFILTER:
+        draft.quickFilter = draft.quickFilter || { transactionType: null };
+        draft.quickFilter.transactionType = action.payload as AppContextTransactionTypes ?? null;
+
+        draft.filteredActivities.splice(0, draft.filteredActivities.length);
+
+        (!draft.quickFilter.transactionType
+          ? draft._activities.concat()
+          : draft._activities.filter(
+            (activity: AppActivity) =>
+              activity.type === draft.quickFilter?.transactionType
+          ).concat()).forEach(i => draft.filteredActivities.push(i))
         break;
       case AppContextDispatchTypes.CREDIT:
         draft.individuals

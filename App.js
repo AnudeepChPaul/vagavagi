@@ -14,11 +14,11 @@ export default function App() {
     return () => cleanup();
   }, []);
 
-  return <SafeAreaProvider>
+  return (
     <DeviceLayerContext>
       <NavigationContainer>
         <RootNavigationController />
       </NavigationContainer>
     </DeviceLayerContext>
-  </SafeAreaProvider>
+  )
 }

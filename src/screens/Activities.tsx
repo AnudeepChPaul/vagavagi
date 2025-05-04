@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { AppText } from "src/atoms/AppText";
 import { useAppContext } from "src/context/AppContext";
-import { AppActivity, AppContextDispatchTypes } from "src/data/types";
+import { AppActivity, AppContextTransactionTypes } from "src/data/types";
 import { useImmer } from "use-immer";
 import { faker } from "@faker-js/faker";
 import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
@@ -59,9 +59,9 @@ export const ActivitiesScreen = () => {
       }}
     />
     <ScrollView style={{ flex: 1, height: 200, width: '100%' }}>
-      {appData.activities.map((activity: AppActivity) => {
+      {appData._activities.map((activity: AppActivity) => {
         const backgroundColor = faker.color.human();
-        const cOrD = activity.type === AppContextDispatchTypes.CREDIT ? 0 : 1;
+        const cOrD = activity.type === AppContextTransactionTypes.CREDIT ? 0 : 1;
 
         return <View key={activity.sid}
           style={{ width: '100%', margin: 'auto', paddingLeft: 16, paddingRight: 16 }}>
