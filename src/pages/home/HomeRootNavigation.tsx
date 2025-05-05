@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Icon } from '@rneui/themed';
 import { useEffect } from "react";
 import { Button, Platform } from 'react-native';
+import { AppText } from "src/atoms/AppText";
 import { ApplicationContext } from "src/context/AppContext";
 import { useAuthContext } from 'src/context/AuthContext';
 import { StatusBarContextActions, useStatusBarContext } from "src/context/StatusBarContext";
@@ -53,7 +54,8 @@ export function TabbedBarStack() {
     }
 
     navigation.setOptions({
-      headerTitle: () => authCtx.auth.name,
+      headerTitle: '',
+      headerLeft: () => <AppText>{authCtx.auth.name}</AppText>,
       headerRight: () => (
         // @ts-ignore
         <Button onPress={() => navigation.navigate('Add')} title="Add" />

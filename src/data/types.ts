@@ -10,11 +10,12 @@ export enum AppContextDispatchTypes {
   DEBIT = 'DEBIT',
   LOAD_INDIVIDUALS = 'LOAD_INDIVIDUALS',
   LOAD_ACTIVITIES = 'LOAD_ACTIVITIES',
+  LOAD_GROUPS = 'LOAD_GROUPS',
   SET_OVERALLS = 'SET_OVERALLS',
   SET_QUICKFILTER = 'SET_QUICKFILTER',
 }
 
-export enum AppContextTransactionTypes {
+export enum TransationTypes {
   CREDIT = 'CREDIT',
   DEBIT = 'DEBIT',
 }
@@ -23,19 +24,19 @@ export type Group = {
   sid: string;
   name: string;
   individuals: Array<Individual>
-  activities: Array<AppActivity>
+  activities: Array<Transaction>
 }
 
 export class Individual {
   sid: string = '';
   name: string = '';
-  activities: Array<AppActivity> = [];
+  activities: Array<Transaction> = [];
   groups: Array<Group> = [];
 
   constructor(
     sid: string,
     name: string,
-    activities: Array<AppActivity> = [],
+    activities: Array<Transaction> = [],
     groups: Array<Group> = []
   ) {
     this.sid = sid;
@@ -45,11 +46,11 @@ export class Individual {
   }
 }
 
-export type AppActivity = {
+export type Transaction = {
   sid: string;
   from: string;
   to: string;
-  type: AppContextTransactionTypes;
+  type: TransationTypes;
   amount: number;
   createdDate: string;
 }
@@ -61,41 +62,46 @@ export type AppContextState = {
   totalBorrowed: number | null;
   totalLent: number | null;
   quickFilter: {
-    transactionType: AppContextTransactionTypes | null
+    transactionType: TransationTypes | null
   },
   // TODO: convert to map instead sid, Individual
   individuals: Array<Individual>;
   // TODO: convert to map instead sid, Group
   groups: Array<Group>;
   // TODO: convert to map instead sid, AppActivity
-  _activities: Array<AppActivity>;
-  filteredActivities: Array<AppActivity>;
+  _activities: Array<Transaction>;
+  filteredActivities: Array<Transaction>;
 }
 
 export type TransactionDispatch = {
   type: AppContextDispatchTypes,
-  payload: Pick<AppActivity, "amount" | "from" | "to" | "type">
+  payload: Pick<Transaction, "amount" | "from" | "to" | "type">
 }
 
 export type IndividualDispatchPayload = { individual: Individual, destination: null | string }
 
-export type UserGroupDispatch = {
-  type: AppContextDispatchTypes,
+export type IndividualDispatch = {
+  type: AppContextDispatchTypes.LOAD_INDIVIDUALS,
   payload: Array<IndividualDispatchPayload>
 }
 
-export type ActivitiesDispatch = {
-  type: AppContextDispatchTypes,
-  payload: Array<AppActivity>
+export type GroupDispatch = {
+  type: AppContextDispatchTypes.LOAD_GROUPS,
+  payload: Array<Group>
 }
 
-export type AppContextQuickFilterDispatch = {
-  type: AppContextDispatchTypes,
-  payload: AppContextTransactionTypes
+export type ActivitiesDispatch = {
+  type: AppContextDispatchTypes.LOAD_ACTIVITIES,
+  payload: Array<Transaction>
+}
+
+export type QuickFilterDispatch = {
+  type: AppContextDispatchTypes.SET_QUICKFILTER,
+  payload: TransationTypes
 }
 
 export type AppOverallsDispatch = {
-  type: AppContextDispatchTypes,
+  type: AppContextDispatchTypes.SET_OVERALLS,
   payload: Pick<AppContextState,
     | 'totalLent'
     | 'totalBorrowed'
@@ -105,9 +111,10 @@ export type AppOverallsDispatch = {
 
 export type AppContextDispatchAction =
   | TransactionDispatch
-  | UserGroupDispatch
+  | IndividualDispatch
   | ActivitiesDispatch
+  | GroupDispatch
   | AppOverallsDispatch
-  | AppContextQuickFilterDispatch;
+  | QuickFilterDispatch;
 
 

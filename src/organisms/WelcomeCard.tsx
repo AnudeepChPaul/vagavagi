@@ -3,7 +3,7 @@ import { AppPill } from "src/atoms/AppPill";
 import { AppText } from "src/atoms/AppText";
 import { InrIcon } from "src/atoms/InrIcon";
 import { useAppContext } from "src/context/AppContext";
-import { AppContextDispatchTypes, AppContextTransactionTypes } from "src/data/types";
+import { AppContextDispatchTypes, TransationTypes } from "src/data/types";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +27,7 @@ export const WelcomeCard = () => {
           onPress={() => {
             dispatch({
               type: AppContextDispatchTypes.SET_QUICKFILTER,
-              payload: AppContextTransactionTypes.DEBIT
+              payload: TransationTypes.DEBIT
             })
           }}
         >
@@ -53,7 +53,7 @@ export const WelcomeCard = () => {
         <TouchableHighlight onPress={() => {
           dispatch({
             type: AppContextDispatchTypes.SET_QUICKFILTER,
-            payload: AppContextTransactionTypes.CREDIT
+            payload: TransationTypes.CREDIT
           })
         }}>
           <AppText

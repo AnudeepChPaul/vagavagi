@@ -52,8 +52,6 @@ export const DeviceLayerContext = ({ children }) => {
   return (<StatusBarContext.Provider value={[state, dispatch]}>
     <StatusBar
       animated={true}
-      backgroundColor="red"
-      style="auto"
       translucent={false}
       hidden={state.hidden}
     />

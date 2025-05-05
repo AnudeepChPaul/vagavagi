@@ -8,5 +8,5 @@ export function AppText(props: PropsWithChildren<TextProps>) {
     {
       textAlign: 'center',
       fontSize: ROOT_FONT_SIZE
-    }, props.style]} >{props.children}</Text>
+    }, props.style]} {...props}>{props.children}</Text>
 }

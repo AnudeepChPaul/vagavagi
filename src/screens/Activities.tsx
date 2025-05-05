@@ -4,14 +4,15 @@ import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { AppText } from "src/atoms/AppText";
 import { useAppContext } from "src/context/AppContext";
-import { AppActivity, AppContextTransactionTypes } from "src/data/types";
+import { Transaction, TransationTypes } from "src/data/types";
 import { useImmer } from "use-immer";
 import { faker } from "@faker-js/faker";
 import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
+import { getAvatarText } from "src/util/Util";
 
 
 export const ActivitiesScreen = () => {
-  const [appData] = useAppContext();
+  const [appCtx, dispatch] = useAppContext();
   const navigation = useNavigation();
 
   const colors = ['green', 'red'];
@@ -59,25 +60,56 @@ export const ActivitiesScreen = () => {
       }}
     />
     <ScrollView style={{ flex: 1, height: 200, width: '100%' }}>
-      {appData._activities.map((activity: AppActivity) => {
-        const backgroundColor = faker.color.human();
-        const cOrD = activity.type === AppContextTransactionTypes.CREDIT ? 0 : 1;
+      <View style={{
+        width: '100%',
+        margin: 'auto',
+        paddingLeft: 16,
+        paddingRight: 16
+      }}>
+        {appCtx.filteredActivities.map((activity: Transaction) => {
+          const backgroundColor = faker.color.human();
+          const cOrD = activity.type === TransationTypes.CREDIT
+            ? 0
+            : 1;
 
-        return <View key={activity.sid}
-          style={{ width: '100%', margin: 'auto', paddingLeft: 16, paddingRight: 16 }}>
-          <View style={{ width: '100%', borderBottomColor: '#ababab', borderBottomWidth: 1, flexDirection: 'row', paddingTop: 16, paddingBottom: 16, justifyContent: 'space-between', alignItems: 'center' }}>
+          return <View style={{
+            width: '100%',
+            borderBottomColor: '#f0f0f0',
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            paddingTop: 16,
+            paddingBottom: 16,
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            margin: 'auto'
+          }}>
             <Avatar
               key={activity.sid}
               rounded
-              title={activity.from.split(" ").map(c => c[0]).join("")}
+              title={getAvatarText(activity.from)}
               titleStyle={{ mixBlendMode: 'difference' }}
               containerStyle={{ backgroundColor }}
             />
-            <View style={{ marginRight: 10, marginLeft: 10, flex: 1 }}>
-              <AppText style={{ textAlign: 'left', fontSize: ROOT_FONT_SIZE * 1.3, color: colors[cOrD] }}>
+            <View style={{
+              marginRight: 10,
+              marginLeft: 10,
+              flex: 1
+            }}>
+              <AppText
+                numberOfLines={1}
+                ellipsizeMode="middle"
+                style={{
+                  flex: 1,
+                  textAlign: 'left',
+                  fontSize: ROOT_FONT_SIZE,
+                  color: colors[cOrD],
+                }}>
                 {activity.from}
               </AppText>
-              <AppText style={{ textAlign: 'left' }}>
+              <AppText style={{
+                textAlign: 'left',
+                fontSize: ROOT_FONT_SIZE * 0.9
+              }}>
                 {new Date(activity.createdDate).getDay()} days ago
               </AppText>
             </View>
@@ -94,8 +126,8 @@ export const ActivitiesScreen = () => {
               </AppText>
             </View>
           </View>
-        </View>
-      })}
+        })}
+      </View>
     </ScrollView>
   </View>
 }

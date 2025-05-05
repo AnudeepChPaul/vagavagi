@@ -5,8 +5,9 @@ import { useEffect } from "react";
 import { Button, ScrollView, View } from "react-native";
 import { AppText } from "src/atoms/AppText";
 import { useAppContext } from "src/context/AppContext";
-import { AppActivity, AppContextDispatchTypes, AppContextTransactionTypes } from "src/data/types";
+import { Transaction, AppContextDispatchTypes, TransationTypes } from "src/data/types";
 import { ROOT_FONT_SIZE } from "src/layouts/AppLayout";
+import { getAvatarText } from "src/util/Util";
 import { useImmer } from "use-immer";
 
 export function ExpenditureList() {
@@ -27,7 +28,7 @@ export function ExpenditureList() {
     }
     setState({ ongoingUpdate: true });
     if (appCtx.quickFilter?.transactionType
-      === AppContextTransactionTypes.CREDIT) {
+      === TransationTypes.CREDIT) {
       setSelectedFilter([1]);
     } else {
       setSelectedFilter([2]);
@@ -49,12 +50,12 @@ export function ExpenditureList() {
     } else if (selectedFilter[0] === 1) {
       dispatch({
         type: AppContextDispatchTypes.SET_QUICKFILTER,
-        payload: AppContextTransactionTypes.CREDIT
+        payload: TransationTypes.CREDIT
       })
     } else {
       dispatch({
         type: AppContextDispatchTypes.SET_QUICKFILTER,
-        payload: AppContextTransactionTypes.DEBIT
+        payload: TransationTypes.DEBIT
       })
     }
   }, [selectedFilter])
@@ -66,14 +67,14 @@ export function ExpenditureList() {
       alignItems: 'center',
       justifyContent: 'space-between'
     }}>
-      <View style={{ width: '50%' }}>
+      <View style={{ minWidth: 220, alignItems: 'center', justifyContent: 'center' }}>
         <ButtonGroup
           selectMultiple
-          buttonStyle={{ padding: 10 }}
+          buttonStyle={{ padding: 10, flex: 1 }}
           selectedButtonStyle={{ backgroundColor: '#e2e2e2' }}
           disabled={[0]}
           buttons={[
-            <Icon name="filter" type="font-awesome-5" />,
+            <Icon name="filter" type="font-awesome-5" size={16} style={{ paddingLeft: 0, paddingRight: 0 }} />,
             <AppText>Credit</AppText>,
             <AppText>Debit</AppText>
           ]}
@@ -86,7 +87,6 @@ export function ExpenditureList() {
             const _currentSelection = selectedFilter[0];
             const _selectedIndexes = selectedIndexes.concat();
             if (selectedFilter.includes(_currentSelection)) {
-              debugger;
               _selectedIndexes.splice(
                 _selectedIndexes.indexOf(_currentSelection), 1
               );
@@ -104,16 +104,15 @@ export function ExpenditureList() {
         paddingLeft: 16,
         paddingRight: 16
       }}>
-
-        {appCtx.filteredActivities.slice(0, 5).map((activity: AppActivity) => {
+        {appCtx.filteredActivities.slice(0, 5).map((activity: Transaction) => {
           const backgroundColor = faker.color.human();
-          const cOrD = activity.type === AppContextTransactionTypes.CREDIT
+          const cOrD = activity.type === TransationTypes.CREDIT
             ? 0
             : 1;
 
           return <View style={{
             width: '100%',
-            borderBottomColor: '#ababab',
+            borderBottomColor: '#f0f0f0',
             borderBottomWidth: 1,
             flexDirection: 'row',
             paddingTop: 16,
@@ -125,7 +124,7 @@ export function ExpenditureList() {
             <Avatar
               key={activity.sid}
               rounded
-              title={activity.from.split(" ").map(c => c[0]).join("")}
+              title={getAvatarText(activity.from)}
               titleStyle={{ mixBlendMode: 'difference' }}
               containerStyle={{ backgroundColor }}
             />
@@ -134,15 +133,21 @@ export function ExpenditureList() {
               marginLeft: 10,
               flex: 1
             }}>
-              <AppText style={{
-                textAlign: 'left',
-                fontSize: ROOT_FONT_SIZE,
-                color: colors[cOrD]
-              }}>
+              <AppText
+                numberOfLines={1}
+                ellipsizeMode="middle"
+                style={{
+                  flex: 1,
+                  textAlign: 'left',
+                  fontSize: ROOT_FONT_SIZE,
+                  color: colors[cOrD],
+                }}>
                 {activity.from}
               </AppText>
               <AppText style={{
                 textAlign: 'left',
+                color: '#a0a0a0',
+                fontWeight: 'normal',
                 fontSize: ROOT_FONT_SIZE * 0.9
               }}>
                 {new Date(activity.createdDate).getDay()} days ago
@@ -162,12 +167,16 @@ export function ExpenditureList() {
             </View>
           </View>
         })}
-        <Button
-          title="Showing only top 5 activities. See more"
+        <AppText
+          style={{
+            padding: 12,
+            textAlign: 'center',
+            borderBottomColor: '#a0a0a0'
+          }}
           onPress={() => {
             // @ts-ignore
             navigation.push('Activities')
-          }} />
+          }}>Showing only top 5 activities.</AppText>
       </View>
     </ScrollView>
   </View>
