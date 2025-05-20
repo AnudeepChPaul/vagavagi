@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Icon } from '@rneui/themed';
 import { useEffect } from "react";
 import { Button, Platform } from 'react-native';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppText } from "src/atoms/AppText";
 import { ApplicationContext } from "src/context/AppContext";
 import { useAuthContext } from 'src/context/AuthContext';
@@ -15,28 +16,33 @@ import { FriendsScreen } from "src/screens/FriendsScreen";
 import { GroupsScreen } from "src/screens/GroupsScreen";
 import { OverviewSummaryScreen } from "src/screens/OverviewScreen";
 
+/*
+ * Initialize the bottom tab navigator and the native stack navigator.
+ */
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 export function HomeRouteStacks() {
   return <ApplicationContext>
-    <Stack.Navigator
-      id={undefined}
-      initialRouteName="LandingPage"
-    >
-      <Stack.Screen
-        name="Activities"
-        component={ActivitiesScreen}
-      />
-      <Stack.Screen
-        name="Add"
-        component={AddEntry}
-      />
-      <Stack.Screen
-        name="LandingPage"
-        component={TabbedBarStack}
-      ></Stack.Screen>
-    </Stack.Navigator>
+    <SafeAreaProvider>
+      <Stack.Navigator
+        id={undefined}
+        initialRouteName="LandingPage"
+      >
+        <Stack.Screen
+          name="Activities"
+          component={ActivitiesScreen}
+        />
+        <Stack.Screen
+          name="Add"
+          component={AddEntry}
+        />
+        <Stack.Screen
+          name="LandingPage"
+          component={TabbedBarStack}
+        ></Stack.Screen>
+      </Stack.Navigator>
+    </SafeAreaProvider>
   </ApplicationContext>
 }
 
@@ -103,4 +109,3 @@ export function TabbedBarStack() {
     </Tab.Navigator>
   );
 }
-
