@@ -1,76 +1,87 @@
-import { StyleSheet, TouchableHighlight, View } from "react-native";
-import { AppPill } from "src/atoms/AppPill";
-import { AppText } from "src/atoms/AppText";
-import { InrIcon } from "src/atoms/InrIcon";
-import { useAppContext } from "src/context/AppContext";
-import { AppContextDispatchTypes, TransationTypes } from "src/data/types";
+import { StyleSheet, TouchableHighlight, View } from 'react-native'
+import { AppPill } from 'src/atoms/AppPill'
+import { AppText } from 'src/atoms/AppText'
+import { InrIcon } from 'src/atoms/InrIcon'
+import { useAppContext } from 'src/context/AppContext'
+import { AppContextDispatchTypes, TransationTypes } from 'src/data/types'
 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
     flexDirection: 'column',
-    flexWrap: 'nowrap'
+    flexWrap: 'nowrap',
   },
 })
 
 export const WelcomeCard = () => {
-  const [appContext, dispatch] = useAppContext();
+  const [appContext, dispatch] = useAppContext()
 
-  return <View style={styles.container}>
-    <AppPill>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <AppText style={{
-          marginRight: 9,
-        }}>Your total borrowed</AppText>
-        <InrIcon />
-        <TouchableHighlight
-          onPress={() => {
-            dispatch({
-              type: AppContextDispatchTypes.SET_QUICKFILTER,
-              payload: TransationTypes.DEBIT
-            })
-          }}
-        >
+  return (
+    <View style={styles.container}>
+      <AppPill>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <AppText
             style={{
-              marginLeft: 0,
-              fontWeight: 800,
-              fontStyle: 'italic',
-              backgroundColor: 'transparent'
+              marginRight: 9,
             }}
           >
-            {appContext.totalBorrowed}
+            Your total borrowed
           </AppText>
-        </TouchableHighlight>
-      </View>
-    </AppPill>
-    <AppPill>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <AppText style={{
-          marginRight: 9,
-        }}>You've lent a total of</AppText>
-        <InrIcon />
-        <TouchableHighlight onPress={() => {
-          dispatch({
-            type: AppContextDispatchTypes.SET_QUICKFILTER,
-            payload: TransationTypes.CREDIT
-          })
-        }}>
+          <InrIcon />
+          <TouchableHighlight
+            onPress={() => {
+              dispatch({
+                type: AppContextDispatchTypes.SET_QUICKFILTER,
+                payload: TransationTypes.DEBIT,
+              })
+            }}
+          >
+            <AppText
+              style={{
+                marginLeft: 0,
+                fontWeight: 800,
+                fontStyle: 'italic',
+                backgroundColor: 'transparent',
+              }}
+            >
+              {appContext.totalBorrowed}
+            </AppText>
+          </TouchableHighlight>
+        </View>
+      </AppPill>
+      <AppPill>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <AppText
             style={{
-              marginLeft: 0,
-              fontWeight: 800,
-              fontStyle: 'italic',
+              marginRight: 9,
             }}
           >
-            {appContext.totalLent}
+            You've lent a total of
           </AppText>
-        </TouchableHighlight>
-      </View>
-    </AppPill>
-  </View>
+          <InrIcon />
+          <TouchableHighlight
+            onPress={() => {
+              dispatch({
+                type: AppContextDispatchTypes.SET_QUICKFILTER,
+                payload: TransationTypes.CREDIT,
+              })
+            }}
+          >
+            <AppText
+              style={{
+                marginLeft: 0,
+                fontWeight: 800,
+                fontStyle: 'italic',
+              }}
+            >
+              {appContext.totalLent}
+            </AppText>
+          </TouchableHighlight>
+        </View>
+      </AppPill>
+    </View>
+  )
 }
-
 
 // export const WelcomeCard = () => {
 //   const [appContext] = useAppContext();

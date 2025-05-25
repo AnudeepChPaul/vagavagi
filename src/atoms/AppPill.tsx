@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, ReactNode } from "react"
-import { StyleSheet, View } from "react-native"
+import React, { PropsWithChildren, ReactNode } from 'react'
+import { StyleSheet, View } from 'react-native'
 
 const styles = StyleSheet.create({
   pill: {
@@ -11,11 +11,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
-  }
+  },
 })
 
 export const AppPill = ({ children }) => (
-  <View style={styles.pill}>
-    {children}
-  </View>
-);
+  <View style={styles.pill}>{children}</View>
+)

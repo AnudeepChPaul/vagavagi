@@ -1,10 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
-import { DeviceLayerContext } from 'src/context/StatusBarContext';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { initiateListenrs } from 'src/util/ResponsiveUtil';
-import { RootNavigationController } from 'src/pages/auth/Root';
-import { enableMapSet } from "immer"
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
+import { DeviceLayerContext } from "src/context/StatusBarContext";
+import { initiateListenrs } from "src/util/ResponsiveUtil";
+import { RootNavigationController } from "src/pages/Root";
+import { enableMapSet } from "immer";
 
 enableMapSet();
 
@@ -20,5 +19,5 @@ export default function App() {
         <RootNavigationController />
       </NavigationContainer>
     </DeviceLayerContext>
-  )
+  );
 }

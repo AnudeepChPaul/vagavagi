@@ -1,35 +1,39 @@
-import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
-import { StyleSheet, View, Button, ActivityIndicator } from 'react-native';
-import { useImmer } from 'use-immer';
+import { useNavigation } from '@react-navigation/native'
+import { useEffect } from 'react'
+import { StyleSheet, View, Button, ActivityIndicator } from 'react-native'
+import { useImmer } from 'use-immer'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
-});
+})
 
 type AddEntryState = {
-  submitting: boolean;
-  data: null | object;
+  submitting: boolean
+  data: null | object
 }
 
 export function AddEntry() {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
   const [state, setState] = useImmer<AddEntryState>({
     submitting: false,
-    data: null
-  });
+    data: null,
+  })
 
   const submitButton = () => {
-    setState(draft => { draft.submitting = true });
+    setState((draft) => {
+      draft.submitting = true
+    })
     setTimeout(() => {
-      setState(draft => { draft.submitting = false });
+      setState((draft) => {
+        draft.submitting = false
+      })
       navigation.goBack()
     }, 1000)
-  };
+  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -43,25 +47,22 @@ export function AddEntry() {
       //       title="Cancel"
       //       color='tomato' />
       // ),
-      headerRight: () => (
-        state.submitting
-          ? <ActivityIndicator />
-          : <Button onPress={() => submitButton()} title="Submit" />
-      )
-    });
+      headerRight: () =>
+        state.submitting ? (
+          <ActivityIndicator />
+        ) : (
+          <Button onPress={() => submitButton()} title="Submit" />
+        ),
+    })
   }, [state])
 
   return (
     <View style={styles.container}>
-      {
-        state.submitting
-          ? <ActivityIndicator />
-          : <Button
-            title="Add new"
-            onPress={submitButton}
-          />
-      }
+      {state.submitting ? (
+        <ActivityIndicator />
+      ) : (
+        <Button title="Add new" onPress={submitButton} />
+      )}
     </View>
-  );
+  )
 }
-
